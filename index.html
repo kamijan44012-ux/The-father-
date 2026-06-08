@@ -3,179 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Zeeshan Ali — Mobile & Web Developer. Personal portfolio." />
-  <title>Zeeshan Ali — Developer</title>
-
-  <!-- Fonts -->
+  <title>noon — Electronics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
-
-  <!-- Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Grain / texture overlay -->
-  <div class="grain" aria-hidden="true"></div>
+  <!-- ===================== HEADER ===================== -->
+  <header class="header">
+    <div class="header__top">
+      <a href="#" class="logo" id="goHome">noon<span>.</span></a>
 
-  <!-- ===== NAVBAR ===== -->
-  <header class="nav" id="nav">
-    <a href="#home" class="nav__logo">ZA<span>.</span></a>
+      <div class="search">
+        <svg viewBox="0 0 24 24" class="search__icon"><path d="M21 21l-4.3-4.3M11 19a8 8 0 100-16 8 8 0 000 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="What are you looking for?" />
+      </div>
 
-    <nav class="nav__links" id="navLinks">
-      <a href="#home" class="nav__link is-active">Home</a>
-      <a href="#about" class="nav__link">About</a>
-      <a href="#services" class="nav__link">Services</a>
-      <a href="#contact" class="nav__link">Contact</a>
-      <a href="#contact" class="btn btn--small nav__cta">Hire Me</a>
-    </nav>
-
-    <button class="nav__burger" id="burger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+      <button class="cart-btn" id="cartBtn">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6zm0 0L5 3H2m6 18a1 1 0 100-2 1 1 0 000 2zm10 0a1 1 0 100-2 1 1 0 000 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Cart</span>
+        <i class="cart-count" id="cartCount">0</i>
+      </button>
+    </div>
+    <div class="header__bar">
+      <span>🚚 Free delivery over AED 100</span>
+      <span>📦 Cash on Delivery</span>
+      <span>⭐ Genuine Electronics</span>
+    </div>
   </header>
 
-  <!-- ===== HOME / HERO ===== -->
-  <section class="hero" id="home">
-    <div class="hero__bg" aria-hidden="true"></div>
-    <div class="container hero__inner">
-      <p class="hero__eyebrow reveal">// Mobile &amp; Web Developer</p>
-      <h1 class="hero__title reveal">
-        Building polished <em>apps</em><br />from anywhere.
-      </h1>
-      <p class="hero__lead reveal">
-        Hi, I'm <strong>Zeeshan Ali</strong> — a self-taught developer crafting fast,
-        functional and beautiful products that ship to the real world.
-      </p>
-      <div class="hero__actions reveal">
-        <a href="#services" class="btn">View my work</a>
-        <a href="#contact" class="btn btn--ghost">Get in touch</a>
-      </div>
-
-      <div class="hero__stats reveal">
-        <div class="stat"><span class="stat__num" data-count="40">0</span><span class="stat__label">Projects shipped</span></div>
-        <div class="stat"><span class="stat__num" data-count="3">0</span><span class="stat__label">Years coding</span></div>
-        <div class="stat"><span class="stat__num" data-count="100">0</span><span class="stat__label">% mobile built</span></div>
-      </div>
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero__content">
+      <p class="hero__tag">ELECTRONICS SALE</p>
+      <h1 class="hero__title">Big tech.<br>Bigger savings.</h1>
+      <p class="hero__sub">Up to 40% off on phones, laptops &amp; gadgets.</p>
+      <a href="#products" class="hero__btn">Shop now</a>
     </div>
-    <a href="#about" class="hero__scroll" aria-label="Scroll down">↓</a>
-  </section>
-
-  <!-- ===== ABOUT ===== -->
-  <section class="section about" id="about">
-    <div class="container about__grid">
-      <div class="about__media reveal">
-        <div class="about__card">
-          <div class="about__avatar">ZA</div>
-          <p class="about__handle">@zeeshan1235</p>
-          <p class="about__role">Developer · UK</p>
-        </div>
-      </div>
-
-      <div class="about__content">
-        <p class="section__eyebrow reveal">// About Me</p>
-        <h2 class="section__title reveal">Code is my craft, shipping is my habit.</h2>
-        <p class="about__text reveal">
-          I build complete, deployable products entirely from a mobile workflow —
-          favouring speed, visual polish and real-world usability over unnecessary
-          complexity. From single-page web apps to installable mobile experiences,
-          I turn ideas into things people can actually use.
-        </p>
-        <p class="about__text reveal">
-          I love the moment an idea becomes a live link. That's the part I optimise for.
-        </p>
-
-        <ul class="skills reveal">
-          <li>HTML &amp; CSS</li>
-          <li>JavaScript</li>
-          <li>React</li>
-          <li>Node.js</li>
-          <li>PWA</li>
-          <li>GitHub Pages</li>
-          <li>UI Design</li>
-        </ul>
-      </div>
+    <div class="hero__art">
+      <div class="hero__badge">UP&nbsp;TO<br><b>40%</b><br>OFF</div>
     </div>
   </section>
 
-  <!-- ===== SERVICES ===== -->
-  <section class="section services" id="services">
-    <div class="container">
-      <p class="section__eyebrow reveal">// What I Do</p>
-      <h2 class="section__title reveal">Services</h2>
-
-      <div class="services__grid">
-        <article class="card reveal">
-          <span class="card__num">01</span>
-          <h3 class="card__title">Web Development</h3>
-          <p class="card__text">Fast, responsive websites and web apps built with clean, modern code that works on every screen.</p>
-        </article>
-
-        <article class="card reveal">
-          <span class="card__num">02</span>
-          <h3 class="card__title">Mobile Apps</h3>
-          <p class="card__text">Installable PWAs and packaged apps — ready for the Play Store and your users' home screens.</p>
-        </article>
-
-        <article class="card reveal">
-          <span class="card__num">03</span>
-          <h3 class="card__title">UI / UX Design</h3>
-          <p class="card__text">Interfaces that look premium and feel effortless, with motion and detail that delight.</p>
-        </article>
-
-        <article class="card reveal">
-          <span class="card__num">04</span>
-          <h3 class="card__title">Deploy &amp; Host</h3>
-          <p class="card__text">From local code to a live URL — deployment, hosting and shipping handled end-to-end.</p>
-        </article>
-      </div>
+  <!-- ===================== PRODUCTS ===================== -->
+  <main class="container">
+    <div class="section-head" id="products">
+      <h2>Top Electronics</h2>
+      <span id="resultCount"></span>
     </div>
-  </section>
+    <div class="grid" id="productGrid"><!-- injected by JS --></div>
+    <p class="empty" id="emptyState" hidden>No products found.</p>
+  </main>
 
-  <!-- ===== CONTACT ===== -->
-  <section class="section contact" id="contact">
-    <div class="container contact__inner">
-      <p class="section__eyebrow reveal">// Say Hello</p>
-      <h2 class="section__title reveal">Let's build something.</h2>
-      <p class="contact__lead reveal">Have a project in mind? Drop a message and I'll get back to you.</p>
-
-      <form class="form reveal" id="contactForm" novalidate>
-        <div class="form__row">
-          <div class="field">
-            <input type="text" id="name" placeholder="Your name" />
-            <span class="field__error" data-for="name"></span>
-          </div>
-          <div class="field">
-            <input type="email" id="email" placeholder="Email address" />
-            <span class="field__error" data-for="email"></span>
-          </div>
-        </div>
-        <div class="field">
-          <textarea id="message" rows="5" placeholder="Tell me about your project..."></textarea>
-          <span class="field__error" data-for="message"></span>
-        </div>
-        <button type="submit" class="btn btn--full" id="submitBtn">Send message</button>
-        <p class="form__success" id="formSuccess">✓ Thanks! Your message has been sent.</p>
-      </form>
-
-      <div class="contact__socials reveal">
-        <a href="https://github.com/zeeshan1235" target="_blank" rel="noopener">GitHub</a>
-        <a href="mailto:hello@example.com">Email</a>
-        <a href="#home">Back to top ↑</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
+  <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
-    <div class="container footer__inner">
-      <span>© <span id="year"></span> Zeeshan Ali</span>
-      <span>Made with code &amp; coffee.</span>
+    <div class="footer__inner">
+      <div>
+        <div class="logo logo--light">noon<span>.</span></div>
+        <p>Your one-stop electronics store in the UAE.</p>
+      </div>
+      <div class="footer__links">
+        <a href="#products">Shop</a>
+        <a href="#">Support</a>
+        <a href="#" id="adminTrigger" class="footer__admin">Admin</a>
+      </div>
     </div>
+    <p class="footer__copy">© <span id="year"></span> noon clone · Built with LocalStorage</p>
   </footer>
 
-  <!-- Script -->
+  <!-- ===================== CART DRAWER ===================== -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer">
+    <div class="drawer__head">
+      <h3>Your Cart</h3>
+      <button class="x" id="closeCart">&times;</button>
+    </div>
+    <div class="drawer__body" id="cartItems"></div>
+    <div class="drawer__foot">
+      <div class="drawer__total"><span>Total</span><b id="cartTotal">AED 0</b></div>
+      <button class="btn btn--block" id="checkoutBtn">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- ===================== CHECKOUT MODAL ===================== -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal__box">
+      <button class="x x--abs" data-close-modal>&times;</button>
+      <h3>Place your order</h3>
+      <p class="modal__sub" id="checkoutSummary"></p>
+      <div class="form-field"><input type="text" id="custName" placeholder="Full name" /></div>
+      <div class="form-field"><input type="tel" id="custPhone" placeholder="Phone number" /></div>
+      <div class="form-field"><input type="text" id="custAddr" placeholder="Delivery address" /></div>
+      <p class="err" id="checkoutErr"></p>
+      <button class="btn btn--block" id="placeOrderBtn">Confirm order</button>
+    </div>
+  </div>
+
+  <!-- ===================== ADMIN LOGIN MODAL ===================== -->
+  <div class="modal" id="loginModal">
+    <div class="modal__box modal__box--sm">
+      <button class="x x--abs" data-close-modal>&times;</button>
+      <h3>🔒 Admin Login</h3>
+      <p class="modal__sub">Enter password to manage the store.</p>
+      <div class="form-field"><input type="password" id="adminPass" placeholder="Password" /></div>
+      <p class="err" id="loginErr"></p>
+      <button class="btn btn--block" id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <!-- ===================== ADMIN PANEL ===================== -->
+  <div class="admin" id="adminPanel">
+    <div class="admin__bar">
+      <div class="logo">noon<span>.</span> <small>Admin</small></div>
+      <div class="admin__bar-actions">
+        <button class="btn btn--ghost btn--sm" id="viewStoreBtn">View Store</button>
+        <button class="btn btn--sm" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin__wrap">
+      <div class="tabs">
+        <button class="tab is-active" data-tab="add">➕ Add Product</button>
+        <button class="tab" data-tab="manage">🗂 Products</button>
+        <button class="tab" data-tab="orders">🧾 Orders <i class="badge" id="ordersBadge">0</i></button>
+      </div>
+
+      <section class="tab-panel is-active" id="tab-add">
+        <h3>Upload new product</h3>
+        <div class="admin-form">
+          <div class="form-field"><label>Product name</label><input type="text" id="pName" placeholder="e.g. Wireless Earbuds Pro" /></div>
+          <div class="form-field"><label>Price (AED)</label><input type="number" id="pPrice" placeholder="e.g. 249" min="0" /></div>
+          <div class="form-field"><label>Image URL</label><input type="text" id="pImage" placeholder="https://...  (optional)" /></div>
+          <p class="err" id="addErr"></p>
+          <button class="btn" id="addProductBtn">Add product</button>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-manage">
+        <h3>Manage products</h3>
+        <div class="admin-list" id="adminProductList"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-orders">
+        <h3>Customer orders</h3>
+        <div class="admin-list" id="adminOrderList"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
   <script src="script.js"></script>
 </body>
 </html>

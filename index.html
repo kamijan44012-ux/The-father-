@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Zeeshan Ali — Mobile & Web Developer. Personal portfolio." />
+  <title>Zeeshan Ali — Developer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Grain / texture overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav" id="nav">
+    <a href="#home" class="nav__logo">ZA<span>.</span></a>
+
+    <nav class="nav__links" id="navLinks">
+      <a href="#home" class="nav__link is-active">Home</a>
+      <a href="#about" class="nav__link">About</a>
+      <a href="#services" class="nav__link">Services</a>
+      <a href="#contact" class="nav__link">Contact</a>
+      <a href="#contact" class="btn btn--small nav__cta">Hire Me</a>
+    </nav>
+
+    <button class="nav__burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ===== HOME / HERO ===== -->
+  <section class="hero" id="home">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <p class="hero__eyebrow reveal">// Mobile &amp; Web Developer</p>
+      <h1 class="hero__title reveal">
+        Building polished <em>apps</em><br />from anywhere.
+      </h1>
+      <p class="hero__lead reveal">
+        Hi, I'm <strong>Zeeshan Ali</strong> — a self-taught developer crafting fast,
+        functional and beautiful products that ship to the real world.
+      </p>
+      <div class="hero__actions reveal">
+        <a href="#services" class="btn">View my work</a>
+        <a href="#contact" class="btn btn--ghost">Get in touch</a>
+      </div>
+
+      <div class="hero__stats reveal">
+        <div class="stat"><span class="stat__num" data-count="40">0</span><span class="stat__label">Projects shipped</span></div>
+        <div class="stat"><span class="stat__num" data-count="3">0</span><span class="stat__label">Years coding</span></div>
+        <div class="stat"><span class="stat__num" data-count="100">0</span><span class="stat__label">% mobile built</span></div>
+      </div>
+    </div>
+    <a href="#about" class="hero__scroll" aria-label="Scroll down">↓</a>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section about" id="about">
+    <div class="container about__grid">
+      <div class="about__media reveal">
+        <div class="about__card">
+          <div class="about__avatar">ZA</div>
+          <p class="about__handle">@zeeshan1235</p>
+          <p class="about__role">Developer · UK</p>
+        </div>
+      </div>
+
+      <div class="about__content">
+        <p class="section__eyebrow reveal">// About Me</p>
+        <h2 class="section__title reveal">Code is my craft, shipping is my habit.</h2>
+        <p class="about__text reveal">
+          I build complete, deployable products entirely from a mobile workflow —
+          favouring speed, visual polish and real-world usability over unnecessary
+          complexity. From single-page web apps to installable mobile experiences,
+          I turn ideas into things people can actually use.
+        </p>
+        <p class="about__text reveal">
+          I love the moment an idea becomes a live link. That's the part I optimise for.
+        </p>
+
+        <ul class="skills reveal">
+          <li>HTML &amp; CSS</li>
+          <li>JavaScript</li>
+          <li>React</li>
+          <li>Node.js</li>
+          <li>PWA</li>
+          <li>GitHub Pages</li>
+          <li>UI Design</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section services" id="services">
+    <div class="container">
+      <p class="section__eyebrow reveal">// What I Do</p>
+      <h2 class="section__title reveal">Services</h2>
+
+      <div class="services__grid">
+        <article class="card reveal">
+          <span class="card__num">01</span>
+          <h3 class="card__title">Web Development</h3>
+          <p class="card__text">Fast, responsive websites and web apps built with clean, modern code that works on every screen.</p>
+        </article>
+
+        <article class="card reveal">
+          <span class="card__num">02</span>
+          <h3 class="card__title">Mobile Apps</h3>
+          <p class="card__text">Installable PWAs and packaged apps — ready for the Play Store and your users' home screens.</p>
+        </article>
+
+        <article class="card reveal">
+          <span class="card__num">03</span>
+          <h3 class="card__title">UI / UX Design</h3>
+          <p class="card__text">Interfaces that look premium and feel effortless, with motion and detail that delight.</p>
+        </article>
+
+        <article class="card reveal">
+          <span class="card__num">04</span>
+          <h3 class="card__title">Deploy &amp; Host</h3>
+          <p class="card__text">From local code to a live URL — deployment, hosting and shipping handled end-to-end.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section contact" id="contact">
+    <div class="container contact__inner">
+      <p class="section__eyebrow reveal">// Say Hello</p>
+      <h2 class="section__title reveal">Let's build something.</h2>
+      <p class="contact__lead reveal">Have a project in mind? Drop a message and I'll get back to you.</p>
+
+      <form class="form reveal" id="contactForm" novalidate>
+        <div class="form__row">
+          <div class="field">
+            <input type="text" id="name" placeholder="Your name" />
+            <span class="field__error" data-for="name"></span>
+          </div>
+          <div class="field">
+            <input type="email" id="email" placeholder="Email address" />
+            <span class="field__error" data-for="email"></span>
+          </div>
+        </div>
+        <div class="field">
+          <textarea id="message" rows="5" placeholder="Tell me about your project..."></textarea>
+          <span class="field__error" data-for="message"></span>
+        </div>
+        <button type="submit" class="btn btn--full" id="submitBtn">Send message</button>
+        <p class="form__success" id="formSuccess">✓ Thanks! Your message has been sent.</p>
+      </form>
+
+      <div class="contact__socials reveal">
+        <a href="https://github.com/zeeshan1235" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:hello@example.com">Email</a>
+        <a href="#home">Back to top ↑</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span>© <span id="year"></span> Zeeshan Ali</span>
+      <span>Made with code &amp; coffee.</span>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>

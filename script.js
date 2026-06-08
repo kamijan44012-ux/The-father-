@@ -1,399 +1,175 @@
-/* =========================================================
-   noon clone — App logic
-   Storefront + Cart + Orders + Admin  (LocalStorage)
-   ========================================================= */
+// Default Sample Products
+const defaultProducts = [
+    { id: 1, name: "iPhone 15 Pro Max 256GB Natural Titanium", price: 4199, media: ["https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=400"], video: "" },
+    { id: 2, name: "Sony PlayStation 5 Slim Digital Edition", price: 1649, media: ["https://images.unsplash.com/photo-1606813907291-d86efa9b94db?q=80&w=400"], video: "" }
+];
 
-const ADMIN_PASSWORD = "202612570";
+let products = JSON.parse(localStorage.getItem('noon_products')) || defaultProducts;
+let cartCount = 0;
 
-/* ---------- LocalStorage keys ---------- */
-const KEYS = { products: "noon_products", cart: "noon_cart", orders: "noon_orders" };
-
-/* ---------- Storage helpers ---------- */
-const load = (key, fallback) => {
-  try { const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; }
-  catch { return fallback; }
-};
-const save = (key, val) => localStorage.setItem(key, JSON.stringify(val));
-
-/* ---------- Placeholder image (no network needed) ---------- */
-function placeholder(label) {
-  const txt = (label || "Product").replace(/[<>&]/g, "").slice(0, 14);
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'>
-    <rect width='400' height='400' fill='#feee00'/>
-    <rect x='120' y='120' width='160' height='160' rx='20' fill='#1a1a1a'/>
-    <text x='200' y='340' font-family='Outfit,Arial' font-size='26' font-weight='700'
-      fill='#1a1a1a' text-anchor='middle'>${txt}</text>
-  </svg>`;
-  return "data:image/svg+xml," + encodeURIComponent(svg);
+// Helper function to fix Google Drive Links automatically
+function fixDriveLink(url) {
+    if (url.includes('drive.google.com')) {
+        let fileId = '';
+        if (url.includes('/d/')) {
+            fileId = url.split('/d/')[1].split('/')[0];
+        } else if (url.includes('id=')) {
+            fileId = url.split('id=')[1].split('&')[0];
+        }
+        return fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : url;
+    }
+    if (url.includes('youtube.com/watch?v=')) {
+        let vidId = url.split('v=')[1].split('&')[0];
+        return `https://www.youtube.com/embed/${vidId}`;
+    }
+    return url;
 }
 
-/* ---------- Seed data (first visit only) ---------- */
-const SEED = [
-  { name: "Wireless Earbuds Pro",       price: 249 },
-  { name: "Smart Watch Series 8",       price: 899 },
-  { name: "4K Action Camera",           price: 549 },
-  { name: "Bluetooth Speaker Boom",     price: 199 },
-  { name: "Gaming Mouse RGB",           price: 129 },
-  { name: "Mechanical Keyboard",        price: 329 },
-  { name: "Power Bank 20000mAh",        price: 99  },
-  { name: "Noise-Cancel Headphones",    price: 459 },
-].map((p, i) => ({ id: "seed-" + i, name: p.name, price: p.price, image: "" }));
+// Track active slide index for each product card
+let activeSlides = {};
 
-/* ---------- State ---------- */
-let products = load(KEYS.products, null);
-if (!products) { products = SEED; save(KEYS.products, products); }
-let cart   = load(KEYS.cart, []);
-let orders = load(KEYS.orders, []);
+function renderProducts() {
+    const productsGrid = document.getElementById('productsGrid');
+    productsGrid.innerHTML = '';
+    
+    products.forEach((product, pIndex) => {
+        // Prepare all viewable media items (Images + Video if exists)
+        let items = [...product.media];
+        if (product.video) {
+            items.push({ type: 'video', url: fixDriveLink(product.video) });
+        }
+        
+        if (!activeSlides[product.id]) activeSlides[product.id] = 0;
+        let currentIdx = activeSlides[product.id];
+        
+        let mediaHtml = '';
+        let currentItem = items[currentIdx];
+        
+        if (currentItem) {
+            if (typeof currentItem === 'object' && currentItem.type === 'video') {
+                if (currentItem.url.includes('youtube.com/embed')) {
+                    mediaHtml = `<iframe src="${currentItem.url}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    mediaHtml = `<video src="${currentItem.url}" controls></video>`;
+                }
+            } else {
+                mediaHtml = `<img src="${fixDriveLink(currentItem)}" alt="${product.name}">`;
+            }
+        }
 
-let buyNowItem = null; // holds single product when "Buy Now" is used
+        // Show buttons only if there are multiple items
+        let controlsHtml = '';
+        if (items.length > 1) {
+            controlsHtml = `
+                <button class="slider-btn prev-btn" onclick="changeSlide(${product.id}, -1)">❮</button>
+                <button class="slider-btn next-btn" onclick="changeSlide(${product.id}, 1)">❯</button>
+            `;
+        }
 
-/* ---------- Shortcuts ---------- */
-const $ = (id) => document.getElementById(id);
-const aed = (n) => "AED " + Number(n).toLocaleString();
-
-/* =========================================================
-   RENDER: STOREFRONT PRODUCTS
-   ========================================================= */
-function renderProducts(filter = "") {
-  const grid = $("productGrid");
-  const term = filter.trim().toLowerCase();
-  const list = products.filter(p => p.name.toLowerCase().includes(term));
-
-  grid.innerHTML = list.map(p => {
-    const img = p.image ? p.image : placeholder(p.name);
-    return `
-      <div class="product">
-        <img class="product__img" src="${img}" alt="${escapeHtml(p.name)}"
-             onerror="this.src='${placeholder(p.name)}'">
-        <div class="product__body">
-          <div class="product__name">${escapeHtml(p.name)}</div>
-          <div class="product__price">${aed(p.price)} <small>incl. VAT</small></div>
-          <div class="product__actions">
-            <button class="btn btn--ghost" data-add="${p.id}">Add to Cart</button>
-            <button class="btn btn--yellow" data-buy="${p.id}">Buy Now</button>
-          </div>
-        </div>
-      </div>`;
-  }).join("");
-
-  $("emptyState").hidden = list.length !== 0;
-  $("resultCount").textContent = list.length + " items";
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-
-/* =========================================================
-   CART
-   ========================================================= */
-function addToCart(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  const line = cart.find(c => c.id === id);
-  if (line) line.qty++;
-  else cart.push({ id, name: p.name, price: p.price, image: p.image, qty: 1 });
-  save(KEYS.cart, cart);
-  renderCart();
-  toast(`${p.name} added to cart`);
-}
-
-function changeQty(id, delta) {
-  const line = cart.find(c => c.id === id);
-  if (!line) return;
-  line.qty += delta;
-  if (line.qty <= 0) cart = cart.filter(c => c.id !== id);
-  save(KEYS.cart, cart);
-  renderCart();
-}
-
-function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
-  save(KEYS.cart, cart);
-  renderCart();
-}
-
-function cartTotal() { return cart.reduce((s, c) => s + c.price * c.qty, 0); }
-
-function renderCart() {
-  const box = $("cartItems");
-  const count = cart.reduce((s, c) => s + c.qty, 0);
-  $("cartCount").textContent = count;
-
-  if (cart.length === 0) {
-    box.innerHTML = `<p class="empty">Your cart is empty.</p>`;
-  } else {
-    box.innerHTML = cart.map(c => {
-      const img = c.image ? c.image : placeholder(c.name);
-      return `
-        <div class="cart-item">
-          <img src="${img}" alt="" onerror="this.src='${placeholder(c.name)}'">
-          <div class="cart-item__info">
-            <div class="cart-item__name">${escapeHtml(c.name)}</div>
-            <div class="cart-item__price">${aed(c.price)}</div>
-            <div class="cart-item__qty">
-              <button data-dec="${c.id}">−</button>
-              <span>${c.qty}</span>
-              <button data-inc="${c.id}">+</button>
+        productsGrid.innerHTML += `
+            <div class="product-card">
+                <div class="media-container" id="media-${product.id}">
+                    ${controlsHtml}
+                    ${mediaHtml}
+                </div>
+                <h3>${product.name}</h3>
+                <div class="price">AED ${product.price}</div>
+                <button class="buy-btn" onclick="addToCart()">Add To Cart</button>
             </div>
-          </div>
-          <button class="cart-item__remove" data-rm="${c.id}">Remove</button>
-        </div>`;
-    }).join("");
-  }
-  $("cartTotal").textContent = aed(cartTotal());
+        `;
+    });
 }
 
-/* =========================================================
-   CHECKOUT / ORDERS
-   ========================================================= */
-function openCheckout(single = null) {
-  buyNowItem = single;
-  const summary = single
-    ? `${single.name} — ${aed(single.price)}`
-    : `${cart.reduce((s, c) => s + c.qty, 0)} items — ${aed(cartTotal())}`;
-  if (!single && cart.length === 0) { toast("Your cart is empty"); return; }
-  $("checkoutSummary").textContent = summary;
-  $("checkoutErr").textContent = "";
-  openModal("checkoutModal");
-}
-
-function placeOrder() {
-  const name = $("custName").value.trim();
-  const phone = $("custPhone").value.trim();
-  const addr = $("custAddr").value.trim();
-  if (!name || !phone || !addr) { $("checkoutErr").textContent = "Please fill all fields."; return; }
-
-  const items = buyNowItem
-    ? [{ name: buyNowItem.name, price: buyNowItem.price, qty: 1 }]
-    : cart.map(c => ({ name: c.name, price: c.price, qty: c.qty }));
-  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-
-  const order = {
-    id: "ORD-" + Date.now().toString().slice(-6),
-    customer: { name, phone, addr },
-    items, total,
-    date: new Date().toLocaleString("en-GB"),
-  };
-  orders.unshift(order);
-  save(KEYS.orders, orders);
-
-  if (!buyNowItem) { cart = []; save(KEYS.cart, cart); renderCart(); }
-  buyNowItem = null;
-
-  ["custName", "custPhone", "custAddr"].forEach(id => ($(id).value = ""));
-  closeModal("checkoutModal");
-  closeCart();
-  renderOrders();
-  toast(`✅ Order ${order.id} placed!`);
-}
-
-/* =========================================================
-   ADMIN
-   ========================================================= */
-function addProduct() {
-  const name = $("pName").value.trim();
-  const price = parseFloat($("pPrice").value);
-  const image = $("pImage").value.trim();
-  if (!name || isNaN(price) || price < 0) {
-    $("addErr").textContent = "Enter a valid name and price."; return;
-  }
-  products.unshift({ id: "p-" + Date.now(), name, price, image });
-  save(KEYS.products, products);
-  $("pName").value = ""; $("pPrice").value = ""; $("pImage").value = "";
-  $("addErr").textContent = "";
-  renderProducts($("searchInput").value);
-  renderAdminProducts();
-  toast(`"${name}" added`);
-}
-
-function editPrice(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  const val = prompt(`New price (AED) for "${p.name}":`, p.price);
-  if (val === null) return;
-  const num = parseFloat(val);
-  if (isNaN(num) || num < 0) { toast("Invalid price"); return; }
-  p.price = num;
-  save(KEYS.products, products);
-  renderProducts($("searchInput").value);
-  renderAdminProducts();
-  toast("Price updated");
-}
-
-function deleteProduct(id) {
-  const p = products.find(x => x.id === id);
-  if (!p || !confirm(`Delete "${p.name}"?`)) return;
-  products = products.filter(x => x.id !== id);
-  save(KEYS.products, products);
-  renderProducts($("searchInput").value);
-  renderAdminProducts();
-  toast("Product deleted");
+window.changeSlide = function(productId, direction) {
+    let product = products.find(p => p.id === productId);
+    let items = [...product.media];
+    if (product.video) items.push({ type: 'video', url: fixDriveLink(product.video) });
+    
+    let currentIdx = activeSlides[productId];
+    currentIdx += direction;
+    
+    if (currentIdx >= items.length) currentIdx = 0;
+    if (currentIdx < 0) currentIdx = items.length - 1;
+    
+    activeSlides[productId] = currentIdx;
+    renderProducts();
 }
 
 function renderAdminProducts() {
-  const box = $("adminProductList");
-  if (products.length === 0) { box.innerHTML = `<p class="empty">No products yet.</p>`; return; }
-  box.innerHTML = products.map(p => {
-    const img = p.image ? p.image : placeholder(p.name);
-    return `
-      <div class="admin-row">
-        <img src="${img}" alt="" onerror="this.src='${placeholder(p.name)}'">
-        <div class="admin-row__info"><b>${escapeHtml(p.name)}</b><span>${aed(p.price)}</span></div>
-        <div class="admin-row__actions">
-          <button class="btn btn--sm btn--ghost" data-edit="${p.id}">Edit price</button>
-          <button class="btn btn--sm btn--danger" data-del="${p.id}">Delete</button>
-        </div>
-      </div>`;
-  }).join("");
-}
-
-function deleteOrder(id) {
-  if (!confirm("Delete this order?")) return;
-  orders = orders.filter(o => o.id !== id);
-  save(KEYS.orders, orders);
-  renderOrders();
-}
-
-function renderOrders() {
-  const box = $("adminOrderList");
-  $("ordersBadge").textContent = orders.length;
-  if (orders.length === 0) { box.innerHTML = `<p class="empty">No orders yet.</p>`; return; }
-  box.innerHTML = orders.map(o => `
-    <div class="order-card">
-      <div class="order-card__head">
-        <span class="order-card__id">${o.id}</span>
-        <span class="order-card__date">${o.date}</span>
-      </div>
-      <div class="order-card__cust">
-        <span>Customer:</span> ${escapeHtml(o.customer.name)} ·
-        <span>📞</span> ${escapeHtml(o.customer.phone)}<br>
-        <span>📍</span> ${escapeHtml(o.customer.addr)}
-      </div>
-      <ul class="order-card__items">
-        ${o.items.map(i => `<li><span>${escapeHtml(i.name)} × ${i.qty}</span><span>${aed(i.price * i.qty)}</span></li>`).join("")}
-      </ul>
-      <div class="order-card__total"><span>Total</span><span>${aed(o.total)}</span></div>
-      <div style="margin-top:12px;text-align:right">
-        <button class="btn btn--sm btn--danger" data-delorder="${o.id}">Delete order</button>
-      </div>
-    </div>`).join("");
-}
-
-/* =========================================================
-   UI HELPERS
-   ========================================================= */
-function openCart() { $("cartDrawer").classList.add("open"); $("overlay").classList.add("show"); }
-function closeCart() { $("cartDrawer").classList.remove("open"); $("overlay").classList.remove("show"); }
-function openModal(id) { $(id).classList.add("show"); }
-function closeModal(id) { $(id).classList.remove("show"); }
-
-let toastTimer;
-function toast(msg) {
-  const t = $("toast");
-  t.textContent = msg; t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
-}
-
-function openAdmin() {
-  $("adminPanel").classList.add("show");
-  document.body.style.overflow = "hidden";
-  renderAdminProducts();
-  renderOrders();
-}
-function closeAdmin() {
-  $("adminPanel").classList.remove("show");
-  document.body.style.overflow = "";
-}
-
-/* =========================================================
-   EVENTS
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  $("year").textContent = new Date().getFullYear();
-  renderProducts();
-  renderCart();
-
-  /* Search */
-  $("searchInput").addEventListener("input", e => renderProducts(e.target.value));
-
-  /* Product grid clicks (event delegation) */
-  $("productGrid").addEventListener("click", e => {
-    const add = e.target.closest("[data-add]");
-    const buy = e.target.closest("[data-buy]");
-    if (add) addToCart(add.dataset.add);
-    if (buy) {
-      const p = products.find(x => x.id === buy.dataset.buy);
-      if (p) openCheckout(p);
-    }
-  });
-
-  /* Cart */
-  $("cartBtn").addEventListener("click", openCart);
-  $("closeCart").addEventListener("click", closeCart);
-  $("overlay").addEventListener("click", closeCart);
-  $("cartItems").addEventListener("click", e => {
-    const inc = e.target.closest("[data-inc]");
-    const dec = e.target.closest("[data-dec]");
-    const rm  = e.target.closest("[data-rm]");
-    if (inc) changeQty(inc.dataset.inc, 1);
-    if (dec) changeQty(dec.dataset.dec, -1);
-    if (rm)  removeFromCart(rm.dataset.rm);
-  });
-  $("checkoutBtn").addEventListener("click", () => openCheckout(null));
-
-  /* Checkout modal */
-  $("placeOrderBtn").addEventListener("click", placeOrder);
-
-  /* Close-buttons for any modal */
-  document.querySelectorAll("[data-close-modal]").forEach(btn =>
-    btn.addEventListener("click", e => e.target.closest(".modal").classList.remove("show")));
-  document.querySelectorAll(".modal").forEach(m =>
-    m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-
-  /* Admin login flow */
-  $("adminTrigger").addEventListener("click", e => { e.preventDefault(); openModal("loginModal"); $("adminPass").focus(); });
-  $("loginBtn").addEventListener("click", doLogin);
-  $("adminPass").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
-
-  function doLogin() {
-    if ($("adminPass").value === ADMIN_PASSWORD) {
-      $("adminPass").value = ""; $("loginErr").textContent = "";
-      closeModal("loginModal");
-      openAdmin();
-    } else {
-      $("loginErr").textContent = "Wrong password. Try again.";
-    }
-  }
-
-  /* Admin panel */
-  $("logoutBtn").addEventListener("click", closeAdmin);
-  $("viewStoreBtn").addEventListener("click", closeAdmin);
-  $("addProductBtn").addEventListener("click", addProduct);
-
-  $("adminProductList").addEventListener("click", e => {
-    const edit = e.target.closest("[data-edit]");
-    const del  = e.target.closest("[data-del]");
-    if (edit) editPrice(edit.dataset.edit);
-    if (del)  deleteProduct(del.dataset.del);
-  });
-  $("adminOrderList").addEventListener("click", e => {
-    const d = e.target.closest("[data-delorder]");
-    if (d) deleteOrder(d.dataset.delorder);
-  });
-
-  /* Tabs */
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("is-active"));
-      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("is-active"));
-      tab.classList.add("is-active");
-      $("tab-" + tab.dataset.tab).classList.add("is-active");
+    const adminProductsList = document.getElementById('adminProductsList');
+    adminProductsList.innerHTML = '';
+    products.forEach(product => {
+        adminProductsList.innerHTML += `
+            <div class="admin-item">
+                <span><strong>${product.name}</strong> - AED ${product.price} (${product.media.length} Images)</span>
+                <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
+            </div>
+        `;
     });
-  });
+}
 
-  /* Logo -> top */
-  $("goHome").addEventListener("click", e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+function addToCart() {
+    cartCount++;
+    document.getElementById('cartCount').innerText = cartCount;
+    alert("Product added to cart! Delivery to Dubai/Abu Dhabi within 24 hours.");
+}
+
+// Admin Panel UI Toggles
+document.getElementById('adminBtn').addEventListener('click', () => document.getElementById('loginModal').classList.remove('hidden'));
+document.getElementById('loginClose').addEventListener('click', () => {
+    document.getElementById('loginModal').classList.add('hidden');
+    document.getElementById('adminPassword').value = '';
 });
+
+document.getElementById('loginSubmit').addEventListener('click', () => {
+    if (document.getElementById('adminPassword').value === '202612570') {
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('customerView').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('adminBtn').classList.add('hidden');
+        renderAdminProducts();
+    } else {
+        alert("Wrong Admin Password!");
+    }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    document.getElementById('adminPanel').classList.add('hidden');
+    document.getElementById('customerView').classList.remove('hidden');
+    document.getElementById('adminBtn').classList.remove('hidden');
+    document.getElementById('adminPassword').value = '';
+});
+
+// Form Submit
+document.getElementById('addProductForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    let imgInput = document.getElementById('prodImages').value;
+    // Split lines or commas to support multiple images
+    let imgArray = imgInput.split(',').map(item => item.trim()).filter(item => item !== '');
+
+    const newProduct = {
+        id: Date.now(),
+        name: document.getElementById('prodName').value,
+        price: Number(document.getElementById('prodPrice').value),
+        media: imgArray,
+        video: document.getElementById('prodVideo').value.trim()
+    };
+    
+    products.push(newProduct);
+    localStorage.setItem('noon_products', JSON.stringify(products));
+    document.getElementById('addProductForm').reset();
+    renderAdminProducts();
+    renderProducts();
+    alert("Product Uploaded with Multi-Media Support!");
+});
+
+window.deleteProduct = function(id) {
+    if (confirm("Are you sure?")) {
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('noon_products', JSON.stringify(products));
+        renderAdminProducts();
+        renderProducts();
+    }
+}
+
+renderProducts();

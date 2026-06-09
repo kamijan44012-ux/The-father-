@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>noon — Online Electronics Store (UAE)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============================== STOREFRONT ============================== -->
+<div id="store">
+
+  <!-- Announcement -->
+  <div class="announce" id="announceBar">🎉 Mega Electronics Sale — Free delivery over AED 100 · Cash on Delivery available</div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__main container">
+      <button class="icon-btn header__menu" id="menuToggle" aria-label="Menu">☰</button>
+      <a href="#" class="logo" id="goHome">noon<span>.</span></a>
+
+      <button class="deliver" id="deliverBtn">
+        <span class="deliver__pin">📍</span>
+        <span><small>Deliver to</small><b id="deliverCity">Dubai, UAE</b></span>
+      </button>
+
+      <div class="search" id="searchWrap">
+        <svg viewBox="0 0 24 24" class="search__icon"><path d="M21 21l-4.3-4.3M11 19a8 8 0 100-16 8 8 0 000 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="Search for phones, laptops, gadgets..." autocomplete="off" />
+        <div class="suggest" id="searchSuggest"></div>
+      </div>
+
+      <div class="header__actions">
+        <button class="icon-btn act" id="ordersBtn"><span class="act__ico">🧾</span><span class="act__txt">Orders</span></button>
+        <button class="icon-btn act" id="wishBtn"><span class="act__ico">♡</span><span class="act__txt">Wishlist</span><i class="pill" id="wishCount">0</i></button>
+        <button class="icon-btn act act--cart" id="cartBtn"><span class="act__ico">🛒</span><span class="act__txt">Cart</span><i class="pill" id="cartCount">0</i></button>
+      </div>
+    </div>
+    <nav class="catnav" id="catNav"></nav>
+  </header>
+
+  <!-- Mobile search -->
+  <div class="msearch">
+    <input type="text" id="msearchInput" placeholder="Search products..." />
+  </div>
+
+  <main class="container">
+
+    <!-- Hero carousel -->
+    <section class="hero">
+      <div class="hero__track" id="heroTrack"></div>
+      <button class="hero__nav hero__nav--prev" id="heroPrev">‹</button>
+      <button class="hero__nav hero__nav--next" id="heroNext">›</button>
+      <div class="hero__dots" id="heroDots"></div>
+    </section>
+
+    <!-- Category tiles -->
+    <section class="cat-tiles" id="catTiles"></section>
+
+    <!-- Flash deals -->
+    <section class="deals">
+      <div class="deals__head">
+        <h2>⚡ Flash Deals</h2>
+        <div class="countdown" id="countdown"></div>
+      </div>
+      <div class="row" id="dealsRow"></div>
+    </section>
+
+    <!-- Main shop -->
+    <section class="shop" id="shopAnchor">
+      <aside class="filters" id="filters">
+        <div class="filters__head"><h3>Filters</h3><button id="clearFilters" class="link">Clear all</button></div>
+        <div class="filter-group">
+          <h4>Category</h4>
+          <div id="filterCats"></div>
+        </div>
+        <div class="filter-group">
+          <h4>Max Price: <span id="priceVal">AED 5000</span></h4>
+          <input type="range" id="priceRange" min="0" max="5000" value="5000" step="50" />
+        </div>
+        <div class="filter-group">
+          <h4>Minimum Rating</h4>
+          <div class="rating-filter" id="ratingFilter">
+            <button data-r="0" class="is-active">All</button>
+            <button data-r="3">3★+</button>
+            <button data-r="4">4★+</button>
+            <button data-r="4.5">4.5★+</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="shop__main">
+        <div class="shop__bar">
+          <h2 id="shopTitle">All Products</h2>
+          <div class="shop__tools">
+            <button class="icon-btn filter-toggle" id="filterToggle">⚙ Filters</button>
+            <select id="sortSelect">
+              <option value="featured">Sort: Featured</option>
+              <option value="low">Price: Low to High</option>
+              <option value="high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="new">Newest</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid" id="productGrid"></div>
+        <p class="empty" id="emptyState" hidden>No products match your filters.</p>
+      </div>
+    </section>
+
+    <!-- Recently viewed -->
+    <section class="recent" id="recentSection" hidden>
+      <h2>Recently Viewed</h2>
+      <div class="row" id="recentRow"></div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+      <div>
+        <h2>Get exclusive deals</h2>
+        <p>Subscribe and never miss a flash sale.</p>
+      </div>
+      <div class="newsletter__form">
+        <input type="email" id="newsEmail" placeholder="Your email address" />
+        <button class="btn" id="newsBtn">Subscribe</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__cols container">
+      <div>
+        <div class="logo logo--light">noon<span>.</span></div>
+        <p>The leading electronics marketplace in the UAE. Genuine products, fast delivery.</p>
+        <div class="socials"><span>📘</span><span>📷</span><span>🐦</span><span>▶️</span></div>
+      </div>
+      <div><h4>Shop</h4><a href="#shopAnchor">All products</a><a href="#" data-foot-cat>Phones</a><a href="#" data-foot-cat>Laptops</a><a href="#">Deals</a></div>
+      <div><h4>Help</h4><a href="#">Track order</a><a href="#">Returns</a><a href="#">Shipping</a><a href="#">Contact us</a></div>
+      <div><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#">Privacy</a><a href="#" id="adminTrigger" class="footer__admin">Admin Panel</a></div>
+    </div>
+    <div class="footer__pay container">
+      <span>We accept:</span> 💳 Visa · Mastercard · 💵 Cash on Delivery · Apple Pay
+    </div>
+    <p class="footer__copy">© <span id="year"></span> noon clone · Built with HTML, CSS, JS &amp; LocalStorage</p>
+  </footer>
+</div>
+
+<!-- ============================== OVERLAY ============================== -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Mobile category drawer -->
+<aside class="mdrawer" id="mobileNav">
+  <div class="drawer__head"><h3>Categories</h3><button class="x" data-close-drawer>&times;</button></div>
+  <div class="mdrawer__body" id="mobileCats"></div>
+</aside>
+
+<!-- ============================== CART DRAWER ============================== -->
+<aside class="drawer" id="cartDrawer">
+  <div class="drawer__head"><h3>Your Cart (<span id="cartItemsCount">0</span>)</h3><button class="x" data-close-drawer>&times;</button></div>
+  <div class="drawer__body" id="cartItems"></div>
+  <div class="drawer__foot" id="cartFoot">
+    <div class="promo">
+      <input type="text" id="promoInput" placeholder="Promo code" />
+      <button id="applyPromo">Apply</button>
+    </div>
+    <p class="promo__msg" id="promoMsg"></p>
+    <div class="sumline"><span>Subtotal</span><b id="sumSub">AED 0</b></div>
+    <div class="sumline"><span>Discount</span><b id="sumDisc">- AED 0</b></div>
+    <div class="sumline"><span>Delivery</span><b id="sumShip">AED 0</b></div>
+    <div class="sumline sumline--total"><span>Total</span><b id="sumTotal">AED 0</b></div>
+    <button class="btn btn--block btn--yellow" id="checkoutBtn">Proceed to Checkout</button>
+  </div>
+</aside>
+
+<!-- ============================== WISHLIST DRAWER ============================== -->
+<aside class="drawer" id="wishDrawer">
+  <div class="drawer__head"><h3>Wishlist</h3><button class="x" data-close-drawer>&times;</button></div>
+  <div class="drawer__body" id="wishItems"></div>
+</aside>
+
+<!-- ============================== ORDERS DRAWER (customer) ============================== -->
+<aside class="drawer drawer--wide" id="myOrdersDrawer">
+  <div class="drawer__head"><h3>My Orders</h3><button class="x" data-close-drawer>&times;</button></div>
+  <div class="drawer__body" id="myOrders"></div>
+</aside>
+
+<!-- ============================== PRODUCT DETAIL MODAL ============================== -->
+<div class="modal" id="productModal">
+  <div class="modal__box modal__box--lg">
+    <button class="x x--abs" data-close-modal>&times;</button>
+    <div class="pd" id="pdBody"></div>
+  </div>
+</div>
+
+<!-- ============================== CHECKOUT MODAL ============================== -->
+<div class="modal" id="checkoutModal">
+  <div class="modal__box modal__box--lg">
+    <button class="x x--abs" data-close-modal>&times;</button>
+    <div class="steps" id="steps">
+      <div class="step is-active" data-step="1"><i>1</i> Shipping</div>
+      <div class="step" data-step="2"><i>2</i> Payment</div>
+      <div class="step" data-step="3"><i>3</i> Review</div>
+    </div>
+
+    <div class="step-panel is-active" id="step-1">
+      <h3>Shipping details</h3>
+      <div class="grid2">
+        <div class="form-field"><label>Full name</label><input id="coName" type="text" placeholder="John Doe" /></div>
+        <div class="form-field"><label>Phone</label><input id="coPhone" type="tel" placeholder="+971 5x xxx xxxx" /></div>
+      </div>
+      <div class="form-field"><label>Email</label><input id="coEmail" type="email" placeholder="you@email.com" /></div>
+      <div class="form-field"><label>Address</label><input id="coAddr" type="text" placeholder="Street, building, apartment" /></div>
+      <div class="grid2">
+        <div class="form-field"><label>City</label>
+          <select id="coCity"><option>Dubai</option><option>Abu Dhabi</option><option>Sharjah</option><option>Ajman</option><option>Ras Al Khaimah</option><option>Fujairah</option><option>Umm Al Quwain</option></select>
+        </div>
+        <div class="form-field"><label>Emirate area / Zone</label><input id="coZone" type="text" placeholder="e.g. Marina" /></div>
+      </div>
+      <p class="err" id="coErr1"></p>
+      <button class="btn btn--block" id="toStep2">Continue to Payment</button>
+    </div>
+
+    <div class="step-panel" id="step-2">
+      <h3>Payment method</h3>
+      <div class="paylist">
+        <label class="pay"><input type="radio" name="pay" value="cod" checked><span>💵 Cash on Delivery</span></label>
+        <label class="pay"><input type="radio" name="pay" value="card"><span>💳 Credit / Debit Card</span></label>
+        <label class="pay"><input type="radio" name="pay" value="apple"><span> Apple Pay</span></label>
+      </div>
+      <div id="cardFields" hidden>
+        <div class="form-field"><label>Card number</label><input id="cardNo" type="text" placeholder="4242 4242 4242 4242" maxlength="19" /></div>
+        <div class="grid2">
+          <div class="form-field"><label>Expiry</label><input id="cardExp" type="text" placeholder="MM/YY" maxlength="5" /></div>
+          <div class="form-field"><label>CVV</label><input id="cardCvv" type="password" placeholder="123" maxlength="4" /></div>
+        </div>
+      </div>
+      <p class="err" id="coErr2"></p>
+      <div class="row-btns">
+        <button class="btn btn--ghost" data-back="1">Back</button>
+        <button class="btn" id="toStep3">Review Order</button>
+      </div>
+    </div>
+
+    <div class="step-panel" id="step-3">
+      <h3>Review &amp; confirm</h3>
+      <div id="reviewBox"></div>
+      <p class="err" id="coErr3"></p>
+      <div class="row-btns">
+        <button class="btn btn--ghost" data-back="2">Back</button>
+        <button class="btn btn--yellow" id="placeOrderBtn">Place Order</button>
+      </div>
+    </div>
+
+    <div class="step-panel" id="step-done">
+      <div class="done">
+        <div class="done__check">✓</div>
+        <h3>Order placed!</h3>
+        <p>Your order <b id="doneId"></b> has been received.</p>
+        <p class="muted">A confirmation has been saved. You can track it under <b>My Orders</b>.</p>
+        <button class="btn btn--yellow" id="doneClose">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== ADMIN LOGIN ============================== -->
+<div class="modal" id="loginModal">
+  <div class="modal__box modal__box--sm">
+    <button class="x x--abs" data-close-modal>&times;</button>
+    <h3>🔒 Admin Login</h3>
+    <p class="modal__sub">Restricted area — enter your password.</p>
+    <div class="form-field"><input id="adminPass" type="password" placeholder="Password" /></div>
+    <p class="err" id="loginErr"></p>
+    <button class="btn btn--block" id="loginBtn">Login</button>
+  </div>
+</div>
+
+<!-- ============================== ADMIN PANEL ============================== -->
+<div class="admin" id="adminPanel">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">noon<span>.</span> <small>Admin</small></div>
+    <nav class="sidebar__nav">
+      <button class="snav is-active" data-view="dashboard">📊 Dashboard</button>
+      <button class="snav" data-view="products">📦 Products</button>
+      <button class="snav" data-view="categories">🏷 Categories</button>
+      <button class="snav" data-view="orders">🧾 Orders <i class="badge" id="navOrders">0</i></button>
+      <button class="snav" data-view="reviews">⭐ Reviews</button>
+      <button class="snav" data-view="coupons">🎟 Coupons</button>
+      <button class="snav" data-view="settings">⚙ Settings</button>
+    </nav>
+    <button class="snav snav--out" id="exitAdmin">↩ View Store</button>
+    <button class="snav snav--logout" id="logoutBtn">⎋ Logout</button>
+  </aside>
+
+  <main class="admin__main">
+    <header class="admin__top">
+      <button class="icon-btn" id="sidebarToggle">☰</button>
+      <h2 id="adminTitle">Dashboard</h2>
+      <div class="admin__who">👤 Administrator</div>
+    </header>
+    <div class="admin__content" id="adminContent"></div>
+  </main>
+</div>
+
+<!-- Product editor modal (admin) -->
+<div class="modal" id="prodModal">
+  <div class="modal__box modal__box--lg">
+    <button class="x x--abs" data-close-modal>&times;</button>
+    <h3 id="prodModalTitle">Add Product</h3>
+    <div class="grid2">
+      <div class="form-field"><label>Name</label><input id="fName" type="text" placeholder="Product name" /></div>
+      <div class="form-field"><label>Category</label><select id="fCategory"></select></div>
+    </div>
+    <div class="grid2">
+      <div class="form-field"><label>Price (AED)</label><input id="fPrice" type="number" min="0" placeholder="249" /></div>
+      <div class="form-field"><label>Old price (optional)</label><input id="fOld" type="number" min="0" placeholder="349" /></div>
+    </div>
+    <div class="grid2">
+      <div class="form-field"><label>Stock</label><input id="fStock" type="number" min="0" placeholder="50" /></div>
+      <div class="form-field"><label>Rating (0-5)</label><input id="fRating" type="number" min="0" max="5" step="0.1" placeholder="4.5" /></div>
+    </div>
+    <div class="form-field"><label>Image URL</label><input id="fImage" type="text" placeholder="https://...  (optional)" /></div>
+    <div class="form-field"><label>Description</label><textarea id="fDesc" rows="3" placeholder="Short description / specs"></textarea></div>
+    <label class="check"><input type="checkbox" id="fFeatured"> Mark as Flash Deal / Featured</label>
+    <p class="err" id="prodErr"></p>
+    <button class="btn btn--block" id="saveProdBtn">Save Product</button>
+  </div>
+</div>
+
+<!-- Order detail modal (admin) -->
+<div class="modal" id="orderModal">
+  <div class="modal__box modal__box--lg">
+    <button class="x x--abs" data-close-modal>&times;</button>
+    <div id="orderDetail"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
